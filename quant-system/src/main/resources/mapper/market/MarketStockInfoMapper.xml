@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quant.trading.system.mapper.market.MarketStockInfoMapper">
+
+    <resultMap type="com.quant.trading.system.domain.market.MarketStockInfo" id="MarketStockInfoResult">
+        <result property="stockId" column="stock_id"/>
+        <result property="symbol" column="symbol"/>
+        <result property="name" column="name"/>
+        <result property="exchange" column="exchange"/>
+        <result property="stockType" column="stock_type"/>
+        <result property="sector" column="sector"/>
+        <result property="industry" column="industry"/>
+        <result property="marketCap" column="market_cap"/>
+        <result property="pe" column="pe"/>
+        <result property="pb" column="pb"/>
+        <result property="dividendYield" column="dividend_yield"/>
+        <result property="week52High" column="week52_high"/>
+        <result property="week52Low" column="week52_low"/>
+        <result property="currentPrice" column="current_price"/>
+        <result property="change" column="change"/>
+        <result property="changePercent" column="change_percent"/>
+        <result property="volume" column="volume"/>
+        <result property="avgVolume" column="avg_volume"/>
+        <result property="beta" column="beta"/>
+        <result property="volatility" column="volatility"/>
+        <result property="status" column="status"/>
+        <result property="listingDate" column="listing_date"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectMarketStockInfoVo">
+        select stock_id, symbol, name, exchange, stock_type, sector, industry, market_cap, 
+               pe, pb, dividend_yield, week52_high, week52_low, current_price, change, 
+               change_percent, volume, avg_volume, beta, volatility, status, listing_date, 
+               last_update_time, create_time, update_time
+        from market_stock_info
+    </sql>
+
+    <select id="selectMarketStockInfoList" parameterType="com.quant.trading.system.domain.market.MarketStockInfo" resultMap="MarketStockInfoResult">
+        <include refid="selectMarketStockInfoVo"/>
+        <where>
+            <if test="symbol != null and symbol != ''">
+                AND symbol like concat('%', #{symbol}, '%')
+            </if>
+            <if test="name != null and name != ''">
+                AND name like concat('%', #{name}, '%')
+            </if>
+            <if test="exchange != null and exchange != ''">
+                AND exchange = #{exchange}
+            </if>
+            <if test="stockType != null and stockType != ''">
+                AND stock_type = #{stockType}
+            </if>
+            <if test="sector != null and sector != ''">
+                AND sector = #{sector}
+            </if>
+            <if test="industry != null and industry != ''">
+                AND industry = #{industry}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectMarketStockInfoById" parameterType="Long" resultMap="MarketStockInfoResult">
+        <include refid="selectMarketStockInfoVo"/>
+        where stock_id = #{stockId}
+    </select>
+
+    <select id="selectMarketStockInfoBySymbol" parameterType="String" resultMap="MarketStockInfoResult">
+        <include refid="selectMarketStockInfoVo"/>
+        where symbol = #{symbol}
+    </select>
+
+    <select id="selectMarketStockInfoByExchange" parameterType="String" resultMap="MarketStockInfoResult">
+        <include refid="selectMarketStockInfoVo"/>
+        where exchange = #{exchange}
+        order by market_cap desc
+    </select>
+
+    <select id="selectMarketStockInfoCount" resultType="int">
+        select count(*) from market_stock_info
+    </select>
+
+    <select id="checkSymbolExists" parameterType="String" resultType="int">
+        select count(1) from market_stock_info where symbol = #{symbol}
+    </select>
+
+    <insert id="insertMarketStockInfo" parameterType="com.quant.trading.system.domain.market.MarketStockInfo" useGeneratedKeys="true" keyProperty="stockId">
+        insert into market_stock_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="symbol != null and symbol != ''">symbol,</if>
+            <if test="name != null">name,</if>
+            <if test="exchange != null">exchange,</if>
+            <if test="stockType != null">stock_type,</if>
+            <if test="sector != null">sector,</if>
+            <if test="industry != null">industry,</if>
+            <if test="marketCap != null">market_cap,</if>
+            <if test="pe != null">pe,</if>
+            <if test="pb != null">pb,</if>
+            <if test="dividendYield != null">dividend_yield,</if>
+            <if test="week52High != null">week52_high,</if>
+            <if test="week52Low != null">week52_low,</if>
+            <if test="currentPrice != null">current_price,</if>
+            <if test="change != null">change,</if>
+            <if test="changePercent != null">change_percent,</if>
+            <if test="volume != null">volume,</if>
+            <if test="avgVolume != null">avg_volume,</if>
+            <if test="beta != null">beta,</if>
+            <if test="volatility != null">volatility,</if>
+            <if test="status != null">status,</if>
+            <if test="listingDate != null">listing_date,</if>
+            <if test="lastUpdateTime != null">last_update_time,</if>
+            create_time,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="symbol != null and symbol != ''">#{symbol},</if>
+            <if test="name != null">#{name},</if>
+            <if test="exchange != null">#{exchange},</if>
+            <if test="stockType != null">#{stockType},</if>
+            <if test="sector != null">#{sector},</if>
+            <if test="industry != null">#{industry},</if>
+            <if test="marketCap != null">#{marketCap},</if>
+            <if test="pe != null">#{pe},</if>
+            <if test="pb != null">#{pb},</if>
+            <if test="dividendYield != null">#{dividendYield},</if>
+            <if test="week52High != null">#{week52High},</if>
+            <if test="week52Low != null">#{week52Low},</if>
+            <if test="currentPrice != null">#{currentPrice},</if>
+            <if test="change != null">#{change},</if>
+            <if test="changePercent != null">#{changePercent},</if>
+            <if test="volume != null">#{volume},</if>
+            <if test="avgVolume != null">#{avgVolume},</if>
+            <if test="beta != null">#{beta},</if>
+            <if test="volatility != null">#{volatility},</if>
+            <if test="status != null">#{status},</if>
+            <if test="listingDate != null">#{listingDate},</if>
+            <if test="lastUpdateTime != null">#{lastUpdateTime},</if>
+            now(),
+        </trim>
+    </insert>
+
+    <insert id="batchInsertMarketStockInfo" parameterType="java.util.List">
+        insert into market_stock_info (symbol, name, exchange, stock_type, sector, industry, 
+                                       market_cap, pe, pb, dividend_yield, week52_high, week52_low, 
+                                       current_price, change, change_percent, volume, avg_volume, 
+                                       beta, volatility, status, create_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.symbol}, #{item.name}, #{item.exchange}, #{item.stockType}, #{item.sector}, 
+             #{item.industry}, #{item.marketCap}, #{item.pe}, #{item.pb}, #{item.dividendYield}, 
+             #{item.week52High}, #{item.week52Low}, #{item.currentPrice}, #{item.change}, 
+             #{item.changePercent}, #{item.volume}, #{item.avgVolume}, #{item.beta}, #{item.volatility}, 
+             #{item.status}, now())
+        </foreach>
+    </insert>
+
+    <update id="updateMarketStockInfo" parameterType="com.quant.trading.system.domain.market.MarketStockInfo">
+        update market_stock_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="symbol != null and symbol != ''">symbol = #{symbol},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="exchange != null">exchange = #{exchange},</if>
+            <if test="stockType != null">stock_type = #{stockType},</if>
+            <if test="sector != null">sector = #{sector},</if>
+            <if test="industry != null">industry = #{industry},</if>
+            <if test="marketCap != null">market_cap = #{marketCap},</if>
+            <if test="pe != null">pe = #{pe},</if>
+            <if test="pb != null">pb = #{pb},</if>
+            <if test="dividendYield != null">dividend_yield = #{dividendYield},</if>
+            <if test="week52High != null">week52_high = #{week52High},</if>
+            <if test="week52Low != null">week52_low = #{week52Low},</if>
+            <if test="currentPrice != null">current_price = #{currentPrice},</if>
+            <if test="change != null">change = #{change},</if>
+            <if test="changePercent != null">change_percent = #{changePercent},</if>
+            <if test="volume != null">volume = #{volume},</if>
+            <if test="avgVolume != null">avg_volume = #{avgVolume},</if>
+            <if test="beta != null">beta = #{beta},</if>
+            <if test="volatility != null">volatility = #{volatility},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="listingDate != null">listing_date = #{listingDate},</if>
+            last_update_time = now(),
+            update_time = now(),
+        </trim>
+        where stock_id = #{stockId}
+    </update>
+
+    <delete id="deleteMarketStockInfoById" parameterType="Long">
+        delete from market_stock_info where stock_id = #{stockId}
+    </delete>
+
+    <delete id="deleteMarketStockInfoByIds" parameterType="Long">
+        delete from market_stock_info where stock_id in
+        <foreach item="stockId" collection="array" open="(" separator="," close=")">
+            #{stockId}
+        </foreach>
+    </delete>
+
+    <update id="updateStockStatusDelisted" parameterType="String">
+        update market_stock_info set status = 'DELISTED', last_update_time = now() where symbol = #{symbol}
+    </update>
+
+</mapper>
